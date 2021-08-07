@@ -12,6 +12,7 @@ export type BackgroundInfo = {
     thumbnail: SRL<'BackgroundThumbnail'>
     data: SRL<'BackgroundData'>
     image: SRL<'BackgroundImage'>
+    configuration: SRL<'BackgroundConfiguration'>
     meta?: unknown
 }
 
@@ -26,6 +27,7 @@ export const backgroundInfoSchema: JTDSchemaType<BackgroundInfo> = {
         thumbnail: getSRLSchema('BackgroundThumbnail'),
         data: getSRLSchema('BackgroundData'),
         image: getSRLSchema('BackgroundImage'),
+        configuration: getSRLSchema('BackgroundConfiguration'),
     },
     optionalProperties: {
         meta: {},
