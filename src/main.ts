@@ -23,7 +23,7 @@ import { Ordering, orderingParser } from './jtd/ordering'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('0.1.0')
+    .version('0.2.0-beta.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-l, --locale <value>', 'target locale', 'en')
