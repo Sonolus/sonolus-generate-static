@@ -1,6 +1,6 @@
 {
   "name": "sonolus-generate-static",
-  "version": "0.2.0-beta.0",
+  "version": "0.2.0",
   "description": "CLI tool to generate static Sonolus server from repository and database",
   "author": "NonSpicyBurrito",
   "repository": "github:NonSpicyBurrito/sonolus-generate-static",
