@@ -1,25 +1,23 @@
-import { JTDParser } from 'ajv/dist/jtd'
 import { Command } from 'commander'
 import {
     copySync,
     emptyDirSync,
     existsSync,
     outputJsonSync,
-    readFileSync,
+    readJsonSync,
     removeSync,
 } from 'fs-extra'
-import { toBackgroundItem } from './api/background-item'
-import { toEffectItem } from './api/effect-item'
-import { toEngineItem } from './api/engine-item'
-import { ItemDetails } from './api/item-details'
-import { toLevelItem } from './api/level-item'
-import { List } from './api/list'
-import { toParticleItem } from './api/particle-item'
-import { toServerInfo } from './api/server-info'
-import { toSkinItem } from './api/skin-item'
-import { DB, dbParser } from './jtd/db'
-import { LocalizationText } from './jtd/localization-text'
-import { Ordering, orderingParser } from './jtd/ordering'
+import { Database, ItemDetails, ItemList, LocalizationText } from 'sonolus-core'
+import { databaseParser } from './schemas/database'
+import { Ordering, orderingParser } from './schemas/ordering'
+import { Parser } from './schemas/parser'
+import { toBackgroundItem } from './server/background-item'
+import { toEffectItem } from './server/effect-item'
+import { toEngineItem } from './server/engine-item'
+import { toLevelItem } from './server/level-item'
+import { toParticleItem } from './server/particle-item'
+import { toServerInfo } from './server/server-info'
+import { toSkinItem } from './server/skin-item'
 
 const options = new Command()
     .name('sonolus-generate-static')
@@ -42,7 +40,7 @@ try {
 
     emptyDirSync(pathOutput)
 
-    const db = parse(dbParser, `${pathInput}/db.json`)
+    const db = parse(databaseParser, `${pathInput}/db.json`)
     const ordering = existsSync(`${pathInput}/ordering.json`)
         ? parse(orderingParser, `${pathInput}/ordering.json`)
         : {}
@@ -71,12 +69,8 @@ try {
     removeSync(pathOutput)
 }
 
-function parse<T>(parser: JTDParser<T>, path: string): T {
-    const data = parser(readFileSync(path, 'utf-8'))
-    if (!data) {
-        throw `${path}(${parser.position}): ${parser.message}`
-    }
-    return data
+function parse<T>(parser: Parser<T>, path: string): T {
+    return parser(readJsonSync(path), path)
 }
 
 function localize(text: LocalizationText) {
@@ -88,7 +82,7 @@ function localize(text: LocalizationText) {
     )
 }
 
-function orderDb(db: DB, ordering: Ordering) {
+function orderDb(db: Database, ordering: Ordering) {
     orderInfos(db.levels, ordering.levels)
     orderInfos(db.skins, ordering.skins)
     orderInfos(db.backgrounds, ordering.backgrounds)
@@ -114,9 +108,13 @@ function outputItems<
     U
 >(
     dirname: string,
-    db: DB,
+    db: Database,
     infos: T[],
-    toItem: (db: DB, localize: (text: LocalizationText) => string, info: T) => U
+    toItem: (
+        db: Database,
+        localize: (text: LocalizationText) => string,
+        info: T
+    ) => U
 ) {
     infos.forEach((info, index) => {
         console.log('[INFO]', `${pathOutput}/${dirname}/${info.name}`)
@@ -131,7 +129,7 @@ function outputItems<
     })
 
     console.log('[INFO]', `${pathOutput}/${dirname}/list`)
-    const list: List<U> = {
+    const list: ItemList<U> = {
         pageCount: 1,
         items: infos.map((info) => toItem(db, localize, info)),
     }
