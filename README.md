@@ -5,9 +5,9 @@ CLI tool to generate static Sonolus server from repository and database.
 ## Links
 
 -   [Sonolus Website](https://sonolus.com)
--   [Sonolus Wiki](https://github.com/NonSpicyBurrito/sonolus-wiki)
--   [sonolus-pack](https://github.com/NonSpicyBurrito/sonolus-pack)
--   [sonolus-express](https://github.com/NonSpicyBurrito/sonolus-express)
+-   [Sonolus Wiki](https://wiki.sonolus.com)
+-   [sonolus-pack](https://github.com/Sonolus/sonolus-pack)
+-   [sonolus-express](https://github.com/Sonolus/sonolus-express)
 
 ## Static Sonolus Server
 
@@ -18,7 +18,7 @@ While static Sonolus servers are easy to host and prepare, it has significant us
 -   No search or pagination.
 -   All contents will be shown in one page.
 
-It is recommended to develop with [sonolus-express](https://github.com/NonSpicyBurrito/sonolus-express) instead.
+It is recommended to develop with [sonolus-express](https://github.com/Sonolus/sonolus-express) instead.
 
 ## Usage
 
@@ -41,18 +41,20 @@ npx sonolus-generate-static -h
 ### Install Globally
 
 Installing globally (only need once):
+
 ```
 npm i -g sonolus-generate-static
 ```
 
 `sonolus-generate-static` will become available to use:
+
 ```
 sonolus-generate-static -h
 ```
 
 ## Input
 
-It is recommended to use [sonolus-pack](https://github.com/NonSpicyBurrito/sonolus-pack) to prepare input.
+It is recommended to use [sonolus-pack](https://github.com/Sonolus/sonolus-pack) to prepare input.
 
 Input contains:
 
