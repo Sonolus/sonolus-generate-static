@@ -132,6 +132,7 @@ function outputItems<
     const list: ItemList<U> = {
         pageCount: 1,
         items: infos.map((info) => toItem(db, localize, info)),
+        search: { options: [] },
     }
     outputJsonSync(`${pathOutput}/${dirname}/list`, list)
 }

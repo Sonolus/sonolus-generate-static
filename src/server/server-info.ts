@@ -11,23 +11,41 @@ export function toServerInfo(
     localize: (text: LocalizationText) => string
 ): ServerInfo {
     return {
-        levels: db.levels
-            .slice(0, 5)
-            .map((info) => toLevelItem(db, localize, info)),
-        skins: db.skins
-            .slice(0, 5)
-            .map((info) => toSkinItem(db, localize, info)),
-        backgrounds: db.backgrounds
-            .slice(0, 5)
-            .map((info) => toBackgroundItem(db, localize, info)),
-        effects: db.effects
-            .slice(0, 5)
-            .map((info) => toEffectItem(db, localize, info)),
-        particles: db.particles
-            .slice(0, 5)
-            .map((info) => toParticleItem(db, localize, info)),
-        engines: db.engines
-            .slice(0, 5)
-            .map((info) => toEngineItem(db, localize, info)),
+        levels: {
+            items: db.levels
+                .slice(0, 5)
+                .map((info) => toLevelItem(db, localize, info)),
+            search: { options: [] },
+        },
+        skins: {
+            items: db.skins
+                .slice(0, 5)
+                .map((info) => toSkinItem(db, localize, info)),
+            search: { options: [] },
+        },
+        backgrounds: {
+            items: db.backgrounds
+                .slice(0, 5)
+                .map((info) => toBackgroundItem(db, localize, info)),
+            search: { options: [] },
+        },
+        effects: {
+            items: db.effects
+                .slice(0, 5)
+                .map((info) => toEffectItem(db, localize, info)),
+            search: { options: [] },
+        },
+        particles: {
+            items: db.particles
+                .slice(0, 5)
+                .map((info) => toParticleItem(db, localize, info)),
+            search: { options: [] },
+        },
+        engines: {
+            items: db.engines
+                .slice(0, 5)
+                .map((info) => toEngineItem(db, localize, info)),
+            search: { options: [] },
+        },
     }
 }
