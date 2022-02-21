@@ -15,5 +15,6 @@ export const engineInfoSchema = z.object({
     particle: z.string(),
     thumbnail: getSRLSchema('EngineThumbnail'),
     data: getSRLSchema('EngineData'),
+    rom: getSRLSchema('EngineRom').optional(),
     configuration: getSRLSchema('EngineConfiguration'),
 })
