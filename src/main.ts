@@ -48,7 +48,7 @@ try {
     orderDb(db, ordering)
 
     console.log('[INFO]', `${pathOutput}/info`)
-    outputJsonSync(`${pathOutput}/info`, toServerInfo(db, localize))
+    outputJsonSync(`${pathOutput}/sonolus/info`, toServerInfo(db, localize))
 
     outputItems('levels', db, db.levels, toLevelItem)
     outputItems('skins', db, db.skins, toSkinItem)
@@ -57,8 +57,8 @@ try {
     outputItems('particles', db, db.particles, toParticleItem)
     outputItems('engines', db, db.engines, toEngineItem)
 
-    console.log('[INFO]', `${pathOutput}/repository`)
-    copySync(`${pathInput}/repository`, `${pathOutput}/repository`)
+    console.log('[INFO]', `${pathOutput}/sonolus/repository`)
+    copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)
 
     console.log()
     console.log('[SUCCESS]', 'Generated to:', pathOutput)
@@ -117,7 +117,7 @@ function outputItems<
     ) => U
 ) {
     infos.forEach((info, index) => {
-        console.log('[INFO]', `${pathOutput}/${dirname}/${info.name}`)
+        console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${info.name}`)
         const itemDetails: ItemDetails<U> = {
             item: toItem(db, localize, info),
             description: localize(info.description),
@@ -125,14 +125,17 @@ function outputItems<
                 .slice(index + 1, index + 6)
                 .map((info) => toItem(db, localize, info)),
         }
-        outputJsonSync(`${pathOutput}/${dirname}/${info.name}`, itemDetails)
+        outputJsonSync(
+            `${pathOutput}/sonolus/${dirname}/${info.name}`,
+            itemDetails
+        )
     })
 
-    console.log('[INFO]', `${pathOutput}/${dirname}/list`)
+    console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
     const list: ItemList<U> = {
         pageCount: 1,
         items: infos.map((info) => toItem(db, localize, info)),
         search: { options: [] },
     }
-    outputJsonSync(`${pathOutput}/${dirname}/list`, list)
+    outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
 }
