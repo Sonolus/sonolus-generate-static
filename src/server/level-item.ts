@@ -4,6 +4,7 @@ import {
     LevelItem,
     LocalizationText,
     UseInfo,
+    UseItem,
 } from 'sonolus-core'
 import { getByName } from '../schemas/database'
 import { toBackgroundItem } from './background-item'
@@ -51,16 +52,18 @@ export function toLevelItem(
             localize: (text: LocalizationText) => string,
             info: T
         ) => U
-    ) {
-        return {
-            useDefault: useInfo.useDefault,
-            item: useInfo.item
-                ? toItem(
+    ): UseItem<U> {
+        return useInfo.useDefault
+            ? {
+                  useDefault: true,
+              }
+            : {
+                  useDefault: false,
+                  item: toItem(
                       db,
                       localize,
                       getByName(infos, useInfo.item, `Level/${info.name}`)
-                  )
-                : undefined,
-        }
+                  ),
+              }
     }
 }
