@@ -47,7 +47,7 @@ try {
 
     orderDb(db, ordering)
 
-    console.log('[INFO]', `${pathOutput}/info`)
+    console.log('[INFO]', `${pathOutput}/sonolus/info`)
     outputJsonSync(`${pathOutput}/sonolus/info`, toServerInfo(db, localize))
 
     outputItems('levels', db, db.levels, toLevelItem)
