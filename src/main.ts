@@ -21,7 +21,7 @@ import { toSkinItem } from './server/skin-item'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('3.0.0')
+    .version('4.0.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-l, --locale <value>', 'target locale', 'en')
@@ -47,7 +47,7 @@ try {
 
     orderDb(db, ordering)
 
-    console.log('[INFO]', `${pathOutput}/info`)
+    console.log('[INFO]', `${pathOutput}/sonolus/info`)
     outputJsonSync(`${pathOutput}/sonolus/info`, toServerInfo(db, localize))
 
     outputItems('levels', db, db.levels, toLevelItem)

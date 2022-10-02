@@ -11,6 +11,8 @@ export function toServerInfo(
     localize: (text: LocalizationText) => string
 ): ServerInfo {
     return {
+        title: localize(db.info.title),
+        banner: db.info.banner,
         levels: {
             items: db.levels
                 .slice(0, 5)
