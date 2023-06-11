@@ -6,11 +6,25 @@ import { toEngineItem } from './engine-item'
 import { toParticleItem } from './particle-item'
 import { toSkinItem } from './skin-item'
 
-export function toLevelItem(
+export const toLevelItem = (
     db: Database,
     localize: (text: LocalizationText) => string,
     info: LevelInfo,
-): LevelItem {
+): LevelItem => {
+    const toUse = <T extends { name: string }, U>(
+        useInfo: UseInfo,
+        infos: T[],
+        toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
+    ): UseItem<U> =>
+        useInfo.useDefault
+            ? {
+                  useDefault: true,
+              }
+            : {
+                  useDefault: false,
+                  item: toItem(db, localize, getByName(infos, useInfo.item, `Level/${info.name}`)),
+              }
+
     return {
         name: info.name,
         version: info.version,
@@ -31,20 +45,5 @@ export function toLevelItem(
         bgm: info.bgm,
         preview: info.preview,
         data: info.data,
-    }
-
-    function toUse<T extends { name: string }, U>(
-        useInfo: UseInfo,
-        infos: T[],
-        toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
-    ): UseItem<U> {
-        return useInfo.useDefault
-            ? {
-                  useDefault: true,
-              }
-            : {
-                  useDefault: false,
-                  item: toItem(db, localize, getByName(infos, useInfo.item, `Level/${info.name}`)),
-              }
     }
 }
