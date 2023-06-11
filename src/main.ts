@@ -74,12 +74,7 @@ function parse<T>(parser: Parser<T>, path: string): T {
 }
 
 function localize(text: LocalizationText) {
-    return (
-        text[targetLocale] ||
-        text[fallbackLocale] ||
-        Object.values(text)[0] ||
-        ''
-    )
+    return text[targetLocale] || text[fallbackLocale] || Object.values(text)[0] || ''
 }
 
 function orderDb(db: Database, ordering: Ordering) {
@@ -91,10 +86,7 @@ function orderDb(db: Database, ordering: Ordering) {
     orderInfos(db.engines, ordering.engines)
 }
 
-function orderInfos<T extends { name: string }>(
-    infos: T[],
-    names: string[] = []
-) {
+function orderInfos<T extends { name: string }>(infos: T[], names: string[] = []) {
     infos.sort((a, b) => getSortOrder(a) - getSortOrder(b))
 
     function getSortOrder(info: T) {
@@ -103,18 +95,11 @@ function orderInfos<T extends { name: string }>(
     }
 }
 
-function outputItems<
-    T extends { name: string; description: LocalizationText },
-    U
->(
+function outputItems<T extends { name: string; description: LocalizationText }, U>(
     dirname: string,
     db: Database,
     infos: T[],
-    toItem: (
-        db: Database,
-        localize: (text: LocalizationText) => string,
-        info: T
-    ) => U
+    toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
 ) {
     infos.forEach((info, index) => {
         console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${info.name}`)
@@ -125,10 +110,7 @@ function outputItems<
                 .slice(index + 1, index + 6)
                 .map((info) => toItem(db, localize, info)),
         }
-        outputJsonSync(
-            `${pathOutput}/sonolus/${dirname}/${info.name}`,
-            itemDetails
-        )
+        outputJsonSync(`${pathOutput}/sonolus/${dirname}/${info.name}`, itemDetails)
     })
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
