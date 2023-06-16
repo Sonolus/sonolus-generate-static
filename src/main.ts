@@ -21,7 +21,7 @@ import { toSkinItem } from './server/skin-item'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('4.0.1')
+    .version('5.0.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-l, --locale <value>', 'target locale', 'en')
@@ -33,6 +33,56 @@ const pathInput = options.input
 const pathOutput = options.output
 const targetLocale = options.locale
 const fallbackLocale = options.fallback
+
+const parse = <T>(parser: Parser<T>, path: string): T => parser(readJsonSync(path), path)
+
+const localize = (text: LocalizationText) =>
+    text[targetLocale] || text[fallbackLocale] || Object.values(text)[0] || ''
+
+const orderDb = (db: Database, ordering: Ordering) => {
+    orderInfos(db.levels, ordering.levels)
+    orderInfos(db.skins, ordering.skins)
+    orderInfos(db.backgrounds, ordering.backgrounds)
+    orderInfos(db.effects, ordering.effects)
+    orderInfos(db.particles, ordering.particles)
+    orderInfos(db.engines, ordering.engines)
+}
+
+const orderInfos = <T extends { name: string }>(infos: T[], names: string[] = []) => {
+    const getSortOrder = (info: T) => {
+        const index = names.indexOf(info.name)
+        return index === -1 ? Number.POSITIVE_INFINITY : index
+    }
+
+    infos.sort((a, b) => getSortOrder(a) - getSortOrder(b))
+}
+
+const outputItems = <T extends { name: string; description: LocalizationText }, U>(
+    dirname: string,
+    db: Database,
+    infos: T[],
+    toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
+) => {
+    infos.forEach((info, index) => {
+        console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${info.name}`)
+        const itemDetails: ItemDetails<U> = {
+            item: toItem(db, localize, info),
+            description: localize(info.description),
+            recommended: infos
+                .slice(index + 1, index + 6)
+                .map((info) => toItem(db, localize, info)),
+        }
+        outputJsonSync(`${pathOutput}/sonolus/${dirname}/${info.name}`, itemDetails)
+    })
+
+    console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
+    const list: ItemList<U> = {
+        pageCount: 1,
+        items: infos.map((info) => toItem(db, localize, info)),
+        search: { options: [] },
+    }
+    outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
+}
 
 try {
     console.log('[INFO]', 'Generating:', pathInput)
@@ -67,75 +117,4 @@ try {
     console.error('[FAILED]', error)
 
     removeSync(pathOutput)
-}
-
-function parse<T>(parser: Parser<T>, path: string): T {
-    return parser(readJsonSync(path), path)
-}
-
-function localize(text: LocalizationText) {
-    return (
-        text[targetLocale] ||
-        text[fallbackLocale] ||
-        Object.values(text)[0] ||
-        ''
-    )
-}
-
-function orderDb(db: Database, ordering: Ordering) {
-    orderInfos(db.levels, ordering.levels)
-    orderInfos(db.skins, ordering.skins)
-    orderInfos(db.backgrounds, ordering.backgrounds)
-    orderInfos(db.effects, ordering.effects)
-    orderInfos(db.particles, ordering.particles)
-    orderInfos(db.engines, ordering.engines)
-}
-
-function orderInfos<T extends { name: string }>(
-    infos: T[],
-    names: string[] = []
-) {
-    infos.sort((a, b) => getSortOrder(a) - getSortOrder(b))
-
-    function getSortOrder(info: T) {
-        const index = names.indexOf(info.name)
-        return index === -1 ? Number.POSITIVE_INFINITY : index
-    }
-}
-
-function outputItems<
-    T extends { name: string; description: LocalizationText },
-    U
->(
-    dirname: string,
-    db: Database,
-    infos: T[],
-    toItem: (
-        db: Database,
-        localize: (text: LocalizationText) => string,
-        info: T
-    ) => U
-) {
-    infos.forEach((info, index) => {
-        console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${info.name}`)
-        const itemDetails: ItemDetails<U> = {
-            item: toItem(db, localize, info),
-            description: localize(info.description),
-            recommended: infos
-                .slice(index + 1, index + 6)
-                .map((info) => toItem(db, localize, info)),
-        }
-        outputJsonSync(
-            `${pathOutput}/sonolus/${dirname}/${info.name}`,
-            itemDetails
-        )
-    })
-
-    console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
-    const list: ItemList<U> = {
-        pageCount: 1,
-        items: infos.map((info) => toItem(db, localize, info)),
-        search: { options: [] },
-    }
-    outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
 }
