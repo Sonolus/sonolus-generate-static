@@ -29,14 +29,15 @@ const options = new Command()
     .parse()
     .opts()
 
-const pathInput = options.input
-const pathOutput = options.output
-const targetLocale = options.locale
-const fallbackLocale = options.fallback
+const pathInput = options.input as string
+const pathOutput = options.output as string
+const targetLocale = options.locale as string
+const fallbackLocale = options.fallback as string
 
 const parse = <T>(parser: Parser<T>, path: string): T => parser(readJsonSync(path), path)
 
 const localize = (text: LocalizationText) =>
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     text[targetLocale] || text[fallbackLocale] || Object.values(text)[0] || ''
 
 const orderDb = (db: Database, ordering: Ordering) => {
