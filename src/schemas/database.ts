@@ -30,7 +30,7 @@ export const getByName = <T extends { name: string }>(
     parent: string,
 ): T => {
     const info = infos.find((info) => info.name === name)
-    if (!info) throw `${parent}: ${name} not found`
+    if (!info) throw new Error(`${parent}: ${name} not found`)
 
     return info
 }
