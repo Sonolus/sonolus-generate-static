@@ -29,6 +29,7 @@ export const toEngineItem = (
     ),
     thumbnail: info.thumbnail,
     playData: info.playData,
+    watchData: info.watchData,
     previewData: info.previewData,
     tutorialData: info.tutorialData,
     rom: info.rom,
