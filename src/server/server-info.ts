@@ -1,4 +1,4 @@
-import { Database, LocalizationText, ServerInfo } from 'sonolus-core'
+import { Database, LocalizationText, Section, ServerInfo } from 'sonolus-core'
 import { toBackgroundItem } from './background-item'
 import { toEffectItem } from './effect-item'
 import { toEngineItem } from './engine-item'
@@ -13,32 +13,21 @@ export const toServerInfo = (
 ): ServerInfo => ({
     title: localize(db.info.title),
     banner: db.info.banner,
-    levels: {
-        items: db.levels.slice(0, 5).map((info) => toLevelItem(db, localize, info)),
-        search: { options: [] },
-    },
-    skins: {
-        items: db.skins.slice(0, 5).map((info) => toSkinItem(db, localize, info)),
-        search: { options: [] },
-    },
-    backgrounds: {
-        items: db.backgrounds.slice(0, 5).map((info) => toBackgroundItem(db, localize, info)),
-        search: { options: [] },
-    },
-    effects: {
-        items: db.effects.slice(0, 5).map((info) => toEffectItem(db, localize, info)),
-        search: { options: [] },
-    },
-    particles: {
-        items: db.particles.slice(0, 5).map((info) => toParticleItem(db, localize, info)),
-        search: { options: [] },
-    },
-    engines: {
-        items: db.engines.slice(0, 5).map((info) => toEngineItem(db, localize, info)),
-        search: { options: [] },
-    },
-    replays: {
-        items: db.replays.slice(0, 5).map((info) => toReplayItem(db, localize, info)),
-        search: { options: [] },
-    },
+    levels: toSection(db, localize, db.levels, toLevelItem),
+    skins: toSection(db, localize, db.skins, toSkinItem),
+    backgrounds: toSection(db, localize, db.backgrounds, toBackgroundItem),
+    effects: toSection(db, localize, db.effects, toEffectItem),
+    particles: toSection(db, localize, db.particles, toParticleItem),
+    engines: toSection(db, localize, db.engines, toEngineItem),
+    replays: toSection(db, localize, db.replays, toReplayItem),
+})
+
+const toSection = <T, U>(
+    db: Database,
+    localize: (text: LocalizationText) => string,
+    infos: T[],
+    toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
+): Section<U> => ({
+    items: infos.slice(0, 5).map((info) => toItem(db, localize, info)),
+    search: { options: [] },
 })
