@@ -18,6 +18,7 @@ import { toEffectItem } from './server/effect-item'
 import { toEngineItem } from './server/engine-item'
 import { toLevelItem } from './server/level-item'
 import { toParticleItem } from './server/particle-item'
+import { toReplayItem } from './server/replay-item'
 import { toServerInfo } from './server/server-info'
 import { toSkinItem } from './server/skin-item'
 
@@ -49,6 +50,7 @@ const orderDb = (db: Database, ordering: Ordering) => {
     orderInfos(db.effects, ordering.effects)
     orderInfos(db.particles, ordering.particles)
     orderInfos(db.engines, ordering.engines)
+    orderInfos(db.replays, ordering.replays)
 }
 
 const orderInfos = <T extends { name: string }>(infos: T[], names: string[] = []) => {
@@ -109,6 +111,7 @@ try {
     outputItems('effects', db, db.effects, toEffectItem)
     outputItems('particles', db, db.particles, toParticleItem)
     outputItems('engines', db, db.engines, toEngineItem)
+    outputItems('replays', db, db.replays, toReplayItem)
 
     console.log('[INFO]', `${pathOutput}/sonolus/repository`)
     copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)

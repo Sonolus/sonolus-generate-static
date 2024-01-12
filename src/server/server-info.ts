@@ -4,6 +4,7 @@ import { toEffectItem } from './effect-item'
 import { toEngineItem } from './engine-item'
 import { toLevelItem } from './level-item'
 import { toParticleItem } from './particle-item'
+import { toReplayItem } from './replay-item'
 import { toSkinItem } from './skin-item'
 
 export const toServerInfo = (
@@ -34,6 +35,10 @@ export const toServerInfo = (
     },
     engines: {
         items: db.engines.slice(0, 5).map((info) => toEngineItem(db, localize, info)),
+        search: { options: [] },
+    },
+    replays: {
+        items: db.replays.slice(0, 5).map((info) => toReplayItem(db, localize, info)),
         search: { options: [] },
     },
 })

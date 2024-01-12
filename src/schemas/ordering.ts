@@ -9,6 +9,7 @@ const orderingSchema = z
         effects: z.array(z.string()),
         particles: z.array(z.string()),
         engines: z.array(z.string()),
+        replays: z.array(z.string()),
     })
     .partial()
 
