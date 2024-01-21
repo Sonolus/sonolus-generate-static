@@ -24,7 +24,7 @@ import { toSkinItem } from './server/skin-item'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('5.3.0')
+    .version('5.4.0-alpha.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-l, --locale <value>', 'target locale', 'en')
