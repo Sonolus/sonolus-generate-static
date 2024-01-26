@@ -9,24 +9,39 @@ import {
     readJsonSync,
     removeSync,
 } from 'fs-extra'
-import { Database, ItemDetails, ItemList, LocalizationText } from 'sonolus-core'
+import {
+    Database,
+    Icon,
+    ItemDetails,
+    ItemInfo,
+    ItemList,
+    LocalizationText,
+    PackageInfo,
+    ServerInfo,
+    Text,
+    localize as sonolusLocalize,
+} from 'sonolus-core'
 import { databaseParser } from './schemas/database'
 import { Ordering, orderingParser } from './schemas/ordering'
 import { Parser } from './schemas/parser'
 import { toBackgroundItem } from './server/background-item'
 import { toEffectItem } from './server/effect-item'
 import { toEngineItem } from './server/engine-item'
+import { ToItem } from './server/item'
 import { toLevelItem } from './server/level-item'
 import { toParticleItem } from './server/particle-item'
+import { toPlaylistItem } from './server/playlist-item'
+import { toPostItem } from './server/post-item'
 import { toReplayItem } from './server/replay-item'
-import { toServerInfo } from './server/server-info'
 import { toSkinItem } from './server/skin-item'
+import { Sonolus } from './server/sonolus'
 
 const options = new Command()
     .name('sonolus-generate-static')
     .version('5.3.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
+    .option('-a, --address [value]', 'address')
     .option('-l, --locale <value>', 'target locale', 'en')
     .option('-f, --fallback <value>', 'fallback locale', 'en')
     .parse()
@@ -34,59 +49,73 @@ const options = new Command()
 
 const pathInput = options.input as string
 const pathOutput = options.output as string
+const address = options.address as string | undefined
 const targetLocale = options.locale as string
 const fallbackLocale = options.fallback as string
 
 const parse = <T>(parser: Parser<T>, path: string): T => parser(readJsonSync(path), path)
 
-const localize = (text: LocalizationText) =>
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    text[targetLocale] || text[fallbackLocale] || Object.values(text)[0] || ''
-
 const orderDb = (db: Database, ordering: Ordering) => {
-    orderInfos(db.levels, ordering.levels)
-    orderInfos(db.skins, ordering.skins)
-    orderInfos(db.backgrounds, ordering.backgrounds)
-    orderInfos(db.effects, ordering.effects)
-    orderInfos(db.particles, ordering.particles)
-    orderInfos(db.engines, ordering.engines)
-    orderInfos(db.replays, ordering.replays)
+    orderItems(db.posts, ordering.posts)
+    orderItems(db.playlists, ordering.playlists)
+    orderItems(db.levels, ordering.levels)
+    orderItems(db.skins, ordering.skins)
+    orderItems(db.backgrounds, ordering.backgrounds)
+    orderItems(db.effects, ordering.effects)
+    orderItems(db.particles, ordering.particles)
+    orderItems(db.engines, ordering.engines)
+    orderItems(db.replays, ordering.replays)
 }
 
-const orderInfos = <T extends { name: string }>(infos: T[], names: string[] = []) => {
-    const getSortOrder = (info: T) => {
-        const index = names.indexOf(info.name)
+const orderItems = <T extends { name: string }>(items: T[], names: string[] = []) => {
+    const getSortOrder = (item: T) => {
+        const index = names.indexOf(item.name)
         return index === -1 ? Number.POSITIVE_INFINITY : index
     }
 
-    infos.sort((a, b) => getSortOrder(a) - getSortOrder(b))
+    items.sort((a, b) => getSortOrder(a) - getSortOrder(b))
 }
 
 const outputItems = <T extends { name: string; description: LocalizationText }, U>(
     dirname: string,
-    db: Database,
-    infos: T[],
-    toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
+    sonolus: Sonolus,
+    items: T[],
+    toItem: ToItem<T, U>,
 ) => {
-    infos.forEach((info, index) => {
-        console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${info.name}`)
+    items.forEach((item, index) => {
+        console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${item.name}`)
         const itemDetails: ItemDetails<U> = {
-            item: toItem(db, localize, info),
-            description: localize(info.description),
-            recommended: infos
-                .slice(index + 1, index + 6)
-                .map((info) => toItem(db, localize, info)),
+            item: toItem(sonolus, item),
+            description: sonolus.localize(item.description),
+            sections: [
+                {
+                    title: Text.Recommended,
+                    icon: Icon.Star,
+                    items: items.slice(index + 1, index + 6).map((item) => toItem(sonolus, item)),
+                },
+            ],
         }
-        outputJsonSync(`${pathOutput}/sonolus/${dirname}/${info.name}`, itemDetails)
+        outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
     })
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
     const list: ItemList<U> = {
         pageCount: 1,
-        items: infos.map((info) => toItem(db, localize, info)),
-        search: { options: [] },
+        items: items.map((item) => toItem(sonolus, item)),
     }
     outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
+
+    console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/info`)
+    const itemInfo: ItemInfo<U> = {
+        banner: sonolus.db.info.banner,
+        sections: [
+            {
+                title: Text.Newest,
+                items: items.slice(0, 5).map((item) => toItem(sonolus, item)),
+            },
+        ],
+    }
+    outputJsonSync(`${pathOutput}/sonolus/${dirname}/info`, itemInfo)
 }
 
 try {
@@ -95,23 +124,41 @@ try {
 
     emptyDirSync(pathOutput)
 
-    const db = parse(databaseParser, `${pathInput}/db.json`)
+    const sonolus: Sonolus = {
+        db: parse(databaseParser, `${pathInput}/db.json`),
+        address,
+        localize: (text) => sonolusLocalize(text, targetLocale, fallbackLocale),
+    }
+
     const ordering = existsSync(`${pathInput}/ordering.json`)
         ? parse(orderingParser, `${pathInput}/ordering.json`)
         : {}
-
-    orderDb(db, ordering)
+    orderDb(sonolus.db, ordering)
 
     console.log('[INFO]', `${pathOutput}/sonolus/info`)
-    outputJsonSync(`${pathOutput}/sonolus/info`, toServerInfo(db, localize))
+    const serverInfo: ServerInfo = {
+        title: sonolus.localize(sonolus.db.info.title),
+        description: sonolus.db.info.description && sonolus.localize(sonolus.db.info.description),
+        hasAuthentication: false,
+        banner: sonolus.db.info.banner,
+    }
+    outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
 
-    outputItems('levels', db, db.levels, toLevelItem)
-    outputItems('skins', db, db.skins, toSkinItem)
-    outputItems('backgrounds', db, db.backgrounds, toBackgroundItem)
-    outputItems('effects', db, db.effects, toEffectItem)
-    outputItems('particles', db, db.particles, toParticleItem)
-    outputItems('engines', db, db.engines, toEngineItem)
-    outputItems('replays', db, db.replays, toReplayItem)
+    console.log('[INFO]', `${pathOutput}/sonolus/package`)
+    const packageInfo: PackageInfo = {
+        shouldUpdate: false,
+    }
+    outputJsonSync(`${pathOutput}/sonolus/package`, packageInfo)
+
+    outputItems('posts', sonolus, sonolus.db.posts, toPostItem)
+    outputItems('playlists', sonolus, sonolus.db.playlists, toPlaylistItem)
+    outputItems('levels', sonolus, sonolus.db.levels, toLevelItem)
+    outputItems('skins', sonolus, sonolus.db.skins, toSkinItem)
+    outputItems('backgrounds', sonolus, sonolus.db.backgrounds, toBackgroundItem)
+    outputItems('effects', sonolus, sonolus.db.effects, toEffectItem)
+    outputItems('particles', sonolus, sonolus.db.particles, toParticleItem)
+    outputItems('engines', sonolus, sonolus.db.engines, toEngineItem)
+    outputItems('replays', sonolus, sonolus.db.replays, toReplayItem)
 
     console.log('[INFO]', `${pathOutput}/sonolus/repository`)
     copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)

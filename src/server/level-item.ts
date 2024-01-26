@@ -1,49 +1,78 @@
-import { Database, LevelInfo, LevelItem, LocalizationText, UseInfo, UseItem } from 'sonolus-core'
+import { DatabaseLevelItem, DatabaseUseItem, LevelItem, UseItem } from 'sonolus-core'
 import { getByName } from '../schemas/database'
 import { toBackgroundItem } from './background-item'
 import { toEffectItem } from './effect-item'
 import { toEngineItem } from './engine-item'
+import { ToItem } from './item'
 import { toParticleItem } from './particle-item'
 import { toSkinItem } from './skin-item'
+import { Sonolus } from './sonolus'
+import { toTags } from './tag'
 
-export const toLevelItem = (
-    db: Database,
-    localize: (text: LocalizationText) => string,
-    info: LevelInfo,
-): LevelItem => {
-    const toUse = <T extends { name: string }, U>(
-        useInfo: UseInfo,
-        infos: T[],
-        toItem: (db: Database, localize: (text: LocalizationText) => string, info: T) => U,
-    ): UseItem<U> =>
-        useInfo.useDefault
-            ? {
-                  useDefault: true,
-              }
-            : {
-                  useDefault: false,
-                  item: toItem(db, localize, getByName(infos, useInfo.item, `Level/${info.name}`)),
-              }
+export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item) => ({
+    name: item.name,
+    source: sonolus.address,
+    version: item.version,
+    rating: item.rating,
+    engine: toEngineItem(
+        sonolus,
+        getByName(sonolus.db.engines, item.engine, `Level/${item.name}`, '.engine'),
+    ),
+    useSkin: toUseItem(
+        sonolus,
+        toSkinItem,
+        item.useSkin,
+        sonolus.db.skins,
+        `Level/${item.name}`,
+        '.useSkin.item',
+    ),
+    useBackground: toUseItem(
+        sonolus,
+        toBackgroundItem,
+        item.useBackground,
+        sonolus.db.backgrounds,
+        `Level/${item.name}`,
+        '.useBackground.item',
+    ),
+    useEffect: toUseItem(
+        sonolus,
+        toEffectItem,
+        item.useEffect,
+        sonolus.db.effects,
+        `Level/${item.name}`,
+        '.useEffect.item',
+    ),
+    useParticle: toUseItem(
+        sonolus,
+        toParticleItem,
+        item.useParticle,
+        sonolus.db.particles,
+        `Level/${item.name}`,
+        '.useParticle.item',
+    ),
+    title: sonolus.localize(item.title),
+    artists: sonolus.localize(item.artists),
+    author: sonolus.localize(item.author),
+    tags: toTags(sonolus.localize, item.tags),
+    cover: item.cover,
+    bgm: item.bgm,
+    preview: item.preview,
+    data: item.data,
+})
 
-    return {
-        name: info.name,
-        version: info.version,
-        rating: info.rating,
-        engine: toEngineItem(
-            db,
-            localize,
-            getByName(db.engines, info.engine, `Level/${info.name}`),
-        ),
-        useSkin: toUse(info.useSkin, db.skins, toSkinItem),
-        useBackground: toUse(info.useBackground, db.backgrounds, toBackgroundItem),
-        useEffect: toUse(info.useEffect, db.effects, toEffectItem),
-        useParticle: toUse(info.useParticle, db.particles, toParticleItem),
-        title: localize(info.title),
-        artists: localize(info.artists),
-        author: localize(info.author),
-        cover: info.cover,
-        bgm: info.bgm,
-        preview: info.preview,
-        data: info.data,
-    }
-}
+const toUseItem = <T extends { name: string }, U>(
+    sonolus: Sonolus,
+    toItem: ToItem<T, U>,
+    useItem: DatabaseUseItem,
+    items: T[],
+    parent: string,
+    path: string,
+): UseItem<U> =>
+    useItem.useDefault
+        ? {
+              useDefault: true,
+          }
+        : {
+              useDefault: false,
+              item: toItem(sonolus, getByName(items, useItem.item, parent, path)),
+          }

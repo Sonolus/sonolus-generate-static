@@ -3,6 +3,8 @@ import { getParser } from './parser'
 
 const orderingSchema = z
     .object({
+        posts: z.array(z.string()),
+        playlists: z.array(z.string()),
         levels: z.array(z.string()),
         skins: z.array(z.string()),
         backgrounds: z.array(z.string()),

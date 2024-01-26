@@ -1,17 +1,20 @@
-import { BackgroundInfo, BackgroundItem, Database, LocalizationText } from 'sonolus-core'
+import { BackgroundItem, DatabaseBackgroundItem } from 'sonolus-core'
+import { ToItem } from './item'
+import { toTags } from './tag'
 
-export const toBackgroundItem = (
-    db: Database,
-    localize: (text: LocalizationText) => string,
-    info: BackgroundInfo,
-): BackgroundItem => ({
-    name: info.name,
-    version: info.version,
-    title: localize(info.title),
-    subtitle: localize(info.subtitle),
-    author: localize(info.author),
-    thumbnail: info.thumbnail,
-    data: info.data,
-    image: info.image,
-    configuration: info.configuration,
+export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = (
+    sonolus,
+    item,
+) => ({
+    name: item.name,
+    source: sonolus.address,
+    version: item.version,
+    title: sonolus.localize(item.title),
+    subtitle: sonolus.localize(item.subtitle),
+    author: sonolus.localize(item.author),
+    tags: toTags(sonolus.localize, item.tags),
+    thumbnail: item.thumbnail,
+    data: item.data,
+    image: item.image,
+    configuration: item.configuration,
 })
