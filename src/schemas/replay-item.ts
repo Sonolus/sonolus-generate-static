@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { localizationTextSchema } from './localization-text'
-import { getSRLSchema } from './srl'
+import { srlSchema } from './srl'
 import { databaseTagSchema } from './tag'
 
 export const databaseReplayItemSchema = z.object({
@@ -12,6 +12,6 @@ export const databaseReplayItemSchema = z.object({
     tags: z.array(databaseTagSchema),
     description: localizationTextSchema,
     level: z.string(),
-    data: getSRLSchema('ReplayData'),
-    configuration: getSRLSchema('ReplayConfiguration'),
+    data: srlSchema,
+    configuration: srlSchema,
 })

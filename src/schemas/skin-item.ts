@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { localizationTextSchema } from './localization-text'
-import { getSRLSchema } from './srl'
+import { srlSchema } from './srl'
 import { databaseTagSchema } from './tag'
 
 export const databaseSkinItemSchema = z.object({
@@ -11,7 +11,7 @@ export const databaseSkinItemSchema = z.object({
     author: localizationTextSchema,
     tags: z.array(databaseTagSchema),
     description: localizationTextSchema,
-    thumbnail: getSRLSchema('SkinThumbnail'),
-    data: getSRLSchema('SkinData'),
-    texture: getSRLSchema('SkinTexture'),
+    thumbnail: srlSchema,
+    data: srlSchema,
+    texture: srlSchema,
 })

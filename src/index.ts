@@ -140,6 +140,7 @@ try {
         title: sonolus.localize(sonolus.db.info.title),
         description: sonolus.db.info.description && sonolus.localize(sonolus.db.info.description),
         hasAuthentication: false,
+        hasMultiplayer: false,
         banner: sonolus.db.info.banner,
     }
     outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
