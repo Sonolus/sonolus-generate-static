@@ -1,14 +1,5 @@
 #! /usr/bin/env node
 
-import { Command } from 'commander'
-import {
-    copySync,
-    emptyDirSync,
-    existsSync,
-    outputJsonSync,
-    readJsonSync,
-    removeSync,
-} from 'fs-extra'
 import {
     Database,
     Icon,
@@ -20,7 +11,16 @@ import {
     ServerInfo,
     Text,
     localize as sonolusLocalize,
-} from 'sonolus-core'
+} from '@sonolus/core'
+import { Command } from 'commander'
+import {
+    copySync,
+    emptyDirSync,
+    existsSync,
+    outputJsonSync,
+    readJsonSync,
+    removeSync,
+} from 'fs-extra'
 import { databaseParser } from './schemas/database'
 import { Ordering, orderingParser } from './schemas/ordering'
 import { Parser } from './schemas/parser'

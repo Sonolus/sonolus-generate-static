@@ -1,4 +1,4 @@
-import { DatabaseTag, Tag } from 'sonolus-core'
+import { DatabaseTag, Tag } from '@sonolus/core'
 import { Localize } from './localization'
 
 export const toTags = (localize: Localize, tags: DatabaseTag[]) =>

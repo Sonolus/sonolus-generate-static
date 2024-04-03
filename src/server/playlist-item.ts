@@ -1,4 +1,4 @@
-import { DatabasePlaylistItem, PlaylistItem } from 'sonolus-core'
+import { DatabasePlaylistItem, PlaylistItem } from '@sonolus/core'
 import { getByName } from '../schemas/database'
 import { ToItem } from './item'
 import { toLevelItem } from './level-item'

@@ -1,4 +1,4 @@
-import { Database } from 'sonolus-core'
+import { Database } from '@sonolus/core'
 import { Localize } from './localization'
 
 export type Sonolus = {
