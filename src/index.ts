@@ -38,7 +38,7 @@ import { Sonolus } from './server/sonolus'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('5.3.0')
+    .version('5.4.0')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-a, --address [value]', 'address')
