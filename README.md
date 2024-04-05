@@ -1,4 +1,4 @@
-# sonolus-generate-static
+# Sonolus Generate Static
 
 CLI tool to generate static Sonolus server from repository and database.
 
@@ -29,13 +29,13 @@ Use `npx` to execute without installing.
 Generating using default options:
 
 ```
-npx sonolus-generate-static
+npx @sonolus/generate-static
 ```
 
 Use `-h` to see a list of available options:
 
 ```
-npx sonolus-generate-static -h
+npx @sonolus/generate-static -h
 ```
 
 ### Install Globally
@@ -43,7 +43,7 @@ npx sonolus-generate-static -h
 Installing globally (only need once):
 
 ```
-npm i -g sonolus-generate-static
+npm i -g @sonolus/generate-static
 ```
 
 `sonolus-generate-static` will become available to use:

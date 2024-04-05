@@ -1,16 +1,16 @@
-import { Database, EffectInfo, EffectItem, LocalizationText } from 'sonolus-core'
+import { DatabaseEffectItem, EffectItem } from '@sonolus/core'
+import { ToItem } from './item'
+import { toTags } from './tag'
 
-export const toEffectItem = (
-    db: Database,
-    localize: (text: LocalizationText) => string,
-    info: EffectInfo,
-): EffectItem => ({
-    name: info.name,
-    version: info.version,
-    title: localize(info.title),
-    subtitle: localize(info.subtitle),
-    author: localize(info.author),
-    thumbnail: info.thumbnail,
-    data: info.data,
-    audio: info.audio,
+export const toEffectItem: ToItem<DatabaseEffectItem, EffectItem> = (sonolus, item) => ({
+    name: item.name,
+    source: sonolus.address,
+    version: item.version,
+    title: sonolus.localize(item.title),
+    subtitle: sonolus.localize(item.subtitle),
+    author: sonolus.localize(item.author),
+    tags: toTags(sonolus.localize, item.tags),
+    thumbnail: item.thumbnail,
+    data: item.data,
+    audio: item.audio,
 })

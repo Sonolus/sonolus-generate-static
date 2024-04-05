@@ -1,11 +1,10 @@
-import { BackgroundItem, DatabaseBackgroundItem } from '@sonolus/core'
+import { DatabaseReplayItem, ReplayItem } from '@sonolus/core'
+import { getByName } from '../schemas/database'
 import { ToItem } from './item'
+import { toLevelItem } from './level-item'
 import { toTags } from './tag'
 
-export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = (
-    sonolus,
-    item,
-) => ({
+export const toReplayItem: ToItem<DatabaseReplayItem, ReplayItem> = (sonolus, item) => ({
     name: item.name,
     source: sonolus.address,
     version: item.version,
@@ -13,8 +12,10 @@ export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = 
     subtitle: sonolus.localize(item.subtitle),
     author: sonolus.localize(item.author),
     tags: toTags(sonolus.localize, item.tags),
-    thumbnail: item.thumbnail,
+    level: toLevelItem(
+        sonolus,
+        getByName(sonolus.db.levels, item.level, `Replay/${item.name}`, '.level'),
+    ),
     data: item.data,
-    image: item.image,
     configuration: item.configuration,
 })
