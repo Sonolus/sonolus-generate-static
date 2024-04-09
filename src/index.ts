@@ -82,7 +82,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
     items: T[],
     toItem: ToItem<T, U>,
 ) => {
-    items.forEach((item, index) => {
+    for (const [index, item] of items.entries()) {
         console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${item.name}`)
         const itemDetails: ItemDetails<U> = {
             item: toItem(sonolus, item),
@@ -96,7 +96,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
             ],
         }
         outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
-    })
+    }
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
     const list: ItemList<U> = {
