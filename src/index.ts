@@ -38,7 +38,7 @@ import { Sonolus } from './server/sonolus'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('5.4.0')
+    .version('5.4.1')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-a, --address [value]', 'address')
@@ -82,7 +82,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
     items: T[],
     toItem: ToItem<T, U>,
 ) => {
-    items.forEach((item, index) => {
+    for (const [index, item] of items.entries()) {
         console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${item.name}`)
         const itemDetails: ItemDetails<U> = {
             item: toItem(sonolus, item),
@@ -96,7 +96,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
             ],
         }
         outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
-    })
+    }
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
     const list: ItemList<U> = {
