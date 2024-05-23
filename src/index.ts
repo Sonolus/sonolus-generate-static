@@ -87,6 +87,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
         const itemDetails: ItemDetails<U> = {
             item: toItem(sonolus, item),
             description: sonolus.localize(item.description),
+            hasCommunity: false,
             sections: [
                 {
                     title: Text.Recommended,
