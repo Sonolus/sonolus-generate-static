@@ -38,7 +38,7 @@ import { Sonolus } from './server/sonolus'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('5.4.1')
+    .version('5.4.2')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-a, --address [value]', 'address')
@@ -87,6 +87,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
         const itemDetails: ItemDetails<U> = {
             item: toItem(sonolus, item),
             description: sonolus.localize(item.description),
+            hasCommunity: false,
             sections: [
                 {
                     title: Text.Recommended,
