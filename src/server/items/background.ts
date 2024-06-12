@@ -1,8 +1,11 @@
-import { DatabaseParticleItem, ParticleItem } from '@sonolus/core'
+import { BackgroundItem, DatabaseBackgroundItem } from '@sonolus/core'
+import { toTags } from '../tag'
 import { ToItem } from './item'
-import { toTags } from './tag'
 
-export const toParticleItem: ToItem<DatabaseParticleItem, ParticleItem> = (sonolus, item) => ({
+export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = (
+    sonolus,
+    item,
+) => ({
     name: item.name,
     source: sonolus.address,
     version: item.version,
@@ -12,5 +15,6 @@ export const toParticleItem: ToItem<DatabaseParticleItem, ParticleItem> = (sonol
     tags: toTags(sonolus.localize, item.tags),
     thumbnail: item.thumbnail,
     data: item.data,
-    texture: item.texture,
+    image: item.image,
+    configuration: item.configuration,
 })

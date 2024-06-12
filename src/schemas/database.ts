@@ -1,39 +1,29 @@
-import { z } from 'zod'
-import { databaseBackgroundItemSchema } from './background-item'
-import { databaseEffectItemSchema } from './effect-item'
-import { databaseEngineItemSchema } from './engine-item'
-import { databaseLevelItemSchema } from './level-item'
-import { getParser } from './parser'
-import { databaseParticleItemSchema } from './particle-item'
-import { databasePlaylistItemSchema } from './playlist-item'
-import { databasePostItemSchema } from './post-item'
-import { databaseReplayItemSchema } from './replay-item'
-import { databaseServerInfoSchema } from './server-info'
-import { databaseSkinItemSchema } from './skin-item'
+import { Type } from '@sinclair/typebox'
+import { Database } from '@sonolus/core'
+import { Expect } from '../utils/test'
+import { databaseBackgroundItemSchema } from './items/background'
+import { databaseEffectItemSchema } from './items/effect'
+import { databaseEngineItemSchema } from './items/engine'
+import { databaseLevelItemSchema } from './items/level'
+import { databaseParticleItemSchema } from './items/particle'
+import { databasePlaylistItemSchema } from './items/playlist'
+import { databasePostItemSchema } from './items/post'
+import { databaseReplayItemSchema } from './items/replay'
+import { databaseSkinItemSchema } from './items/skin'
+import { databaseServerInfoSchema } from './serverInfo'
+import { SchemaToMatch } from './test'
 
-const databaseSchema = z.object({
+export const databaseSchema = Type.Object({
     info: databaseServerInfoSchema,
-    posts: z.array(databasePostItemSchema),
-    playlists: z.array(databasePlaylistItemSchema),
-    levels: z.array(databaseLevelItemSchema),
-    skins: z.array(databaseSkinItemSchema),
-    backgrounds: z.array(databaseBackgroundItemSchema),
-    effects: z.array(databaseEffectItemSchema),
-    particles: z.array(databaseParticleItemSchema),
-    engines: z.array(databaseEngineItemSchema),
-    replays: z.array(databaseReplayItemSchema),
+    posts: Type.Array(databasePostItemSchema),
+    playlists: Type.Array(databasePlaylistItemSchema),
+    levels: Type.Array(databaseLevelItemSchema),
+    skins: Type.Array(databaseSkinItemSchema),
+    backgrounds: Type.Array(databaseBackgroundItemSchema),
+    effects: Type.Array(databaseEffectItemSchema),
+    particles: Type.Array(databaseParticleItemSchema),
+    engines: Type.Array(databaseEngineItemSchema),
+    replays: Type.Array(databaseReplayItemSchema),
 })
 
-export const databaseParser = getParser(databaseSchema)
-
-export const getByName = <T extends { name: string }>(
-    items: T[],
-    name: string,
-    parent: string,
-    path: string,
-): T => {
-    const item = items.find((item) => item.name === name)
-    if (!item) throw new Error(`${parent}: ${name} not found (${path})`)
-
-    return item
-}
+type _Tests = Expect<[SchemaToMatch<typeof databaseSchema, Database>]>

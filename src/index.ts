@@ -13,28 +13,21 @@ import {
     localize as sonolusLocalize,
 } from '@sonolus/core'
 import { Command } from 'commander'
-import {
-    copySync,
-    emptyDirSync,
-    existsSync,
-    outputJsonSync,
-    readJsonSync,
-    removeSync,
-} from 'fs-extra'
-import { databaseParser } from './schemas/database'
-import { Ordering, orderingParser } from './schemas/ordering'
-import { Parser } from './schemas/parser'
-import { toBackgroundItem } from './server/background-item'
-import { toEffectItem } from './server/effect-item'
-import { toEngineItem } from './server/engine-item'
-import { ToItem } from './server/item'
-import { toLevelItem } from './server/level-item'
-import { toParticleItem } from './server/particle-item'
-import { toPlaylistItem } from './server/playlist-item'
-import { toPostItem } from './server/post-item'
-import { toReplayItem } from './server/replay-item'
-import { toSkinItem } from './server/skin-item'
+import { copySync, emptyDirSync, existsSync, outputJsonSync, removeSync } from 'fs-extra'
+import { databaseSchema } from './schemas/database'
+import { Ordering, orderingSchema } from './schemas/ordering'
+import { toBackgroundItem } from './server/items/background'
+import { toEffectItem } from './server/items/effect'
+import { toEngineItem } from './server/items/engine'
+import { ToItem } from './server/items/item'
+import { toLevelItem } from './server/items/level'
+import { toParticleItem } from './server/items/particle'
+import { toPlaylistItem } from './server/items/playlist'
+import { toPostItem } from './server/items/post-item'
+import { toReplayItem } from './server/items/replay'
+import { toSkinItem } from './server/items/skin'
 import { Sonolus } from './server/sonolus'
+import { parse } from './utils/json'
 
 const options = new Command()
     .name('sonolus-generate-static')
@@ -52,8 +45,6 @@ const pathOutput = options.output as string
 const address = options.address as string | undefined
 const targetLocale = options.locale as string
 const fallbackLocale = options.fallback as string
-
-const parse = <T>(parser: Parser<T>, path: string): T => parser(readJsonSync(path), path)
 
 const orderDb = (db: Database, ordering: Ordering) => {
     orderItems(db.posts, ordering.posts)
@@ -126,13 +117,13 @@ try {
     emptyDirSync(pathOutput)
 
     const sonolus: Sonolus = {
-        db: parse(databaseParser, `${pathInput}/db.json`),
+        db: parse(`${pathInput}/db.json`, databaseSchema),
         address,
         localize: (text) => sonolusLocalize(text, targetLocale, fallbackLocale),
     }
 
     const ordering = existsSync(`${pathInput}/ordering.json`)
-        ? parse(orderingParser, `${pathInput}/ordering.json`)
+        ? parse(`${pathInput}/ordering.json`, orderingSchema)
         : {}
     orderDb(sonolus.db, ordering)
 

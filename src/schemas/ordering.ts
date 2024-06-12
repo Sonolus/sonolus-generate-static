@@ -1,19 +1,17 @@
-import { z } from 'zod'
-import { getParser } from './parser'
+import { Static, Type } from '@sinclair/typebox'
 
-const orderingSchema = z
-    .object({
-        posts: z.array(z.string()),
-        playlists: z.array(z.string()),
-        levels: z.array(z.string()),
-        skins: z.array(z.string()),
-        backgrounds: z.array(z.string()),
-        effects: z.array(z.string()),
-        particles: z.array(z.string()),
-        engines: z.array(z.string()),
-        replays: z.array(z.string()),
-    })
-    .partial()
+export const orderingSchema = Type.Partial(
+    Type.Object({
+        posts: Type.Array(Type.String()),
+        playlists: Type.Array(Type.String()),
+        levels: Type.Array(Type.String()),
+        skins: Type.Array(Type.String()),
+        backgrounds: Type.Array(Type.String()),
+        effects: Type.Array(Type.String()),
+        particles: Type.Array(Type.String()),
+        engines: Type.Array(Type.String()),
+        replays: Type.Array(Type.String()),
+    }),
+)
 
-export type Ordering = z.infer<typeof orderingSchema>
-export const orderingParser = getParser(orderingSchema)
+export type Ordering = Static<typeof orderingSchema>
