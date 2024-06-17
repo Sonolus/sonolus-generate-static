@@ -1,11 +1,11 @@
 import { DatabaseEngineItem, EngineItem } from '@sonolus/core'
-import { getByName } from '../schemas/database'
-import { toBackgroundItem } from './background-item'
-import { toEffectItem } from './effect-item'
+import { getByName } from '../database'
+import { toTags } from '../tag'
+import { toBackgroundItem } from './background'
+import { toEffectItem } from './effect'
 import { ToItem } from './item'
-import { toParticleItem } from './particle-item'
-import { toSkinItem } from './skin-item'
-import { toTags } from './tag'
+import { toParticleItem } from './particle'
+import { toSkinItem } from './skin'
 
 export const toEngineItem: ToItem<DatabaseEngineItem, EngineItem> = (sonolus, item) => ({
     name: item.name,
@@ -17,19 +17,19 @@ export const toEngineItem: ToItem<DatabaseEngineItem, EngineItem> = (sonolus, it
     tags: toTags(sonolus.localize, item.tags),
     skin: toSkinItem(
         sonolus,
-        getByName(sonolus.db.skins, item.skin, `Engine/${item.name}`, '.skin'),
+        getByName(sonolus.db.skins, item.skin, `Engine/${item.name}`, '/skin'),
     ),
     background: toBackgroundItem(
         sonolus,
-        getByName(sonolus.db.backgrounds, item.background, `Engine/${item.name}`, '.background'),
+        getByName(sonolus.db.backgrounds, item.background, `Engine/${item.name}`, '/background'),
     ),
     effect: toEffectItem(
         sonolus,
-        getByName(sonolus.db.effects, item.effect, `Engine/${item.name}`, '.effect'),
+        getByName(sonolus.db.effects, item.effect, `Engine/${item.name}`, '/effect'),
     ),
     particle: toParticleItem(
         sonolus,
-        getByName(sonolus.db.particles, item.particle, `Engine/${item.name}`, '.particle'),
+        getByName(sonolus.db.particles, item.particle, `Engine/${item.name}`, '/particle'),
     ),
     thumbnail: item.thumbnail,
     playData: item.playData,

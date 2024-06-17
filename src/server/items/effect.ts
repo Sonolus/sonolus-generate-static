@@ -1,8 +1,8 @@
-import { DatabaseSkinItem, SkinItem } from '@sonolus/core'
+import { DatabaseEffectItem, EffectItem } from '@sonolus/core'
+import { toTags } from '../tag'
 import { ToItem } from './item'
-import { toTags } from './tag'
 
-export const toSkinItem: ToItem<DatabaseSkinItem, SkinItem> = (sonolus, item) => ({
+export const toEffectItem: ToItem<DatabaseEffectItem, EffectItem> = (sonolus, item) => ({
     name: item.name,
     source: sonolus.address,
     version: item.version,
@@ -12,5 +12,5 @@ export const toSkinItem: ToItem<DatabaseSkinItem, SkinItem> = (sonolus, item) =>
     tags: toTags(sonolus.localize, item.tags),
     thumbnail: item.thumbnail,
     data: item.data,
-    texture: item.texture,
+    audio: item.audio,
 })

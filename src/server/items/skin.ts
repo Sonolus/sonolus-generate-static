@@ -1,11 +1,8 @@
-import { BackgroundItem, DatabaseBackgroundItem } from '@sonolus/core'
+import { DatabaseSkinItem, SkinItem } from '@sonolus/core'
+import { toTags } from '../tag'
 import { ToItem } from './item'
-import { toTags } from './tag'
 
-export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = (
-    sonolus,
-    item,
-) => ({
+export const toSkinItem: ToItem<DatabaseSkinItem, SkinItem> = (sonolus, item) => ({
     name: item.name,
     source: sonolus.address,
     version: item.version,
@@ -15,6 +12,5 @@ export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = 
     tags: toTags(sonolus.localize, item.tags),
     thumbnail: item.thumbnail,
     data: item.data,
-    image: item.image,
-    configuration: item.configuration,
+    texture: item.texture,
 })

@@ -1,13 +1,13 @@
 import { DatabaseLevelItem, DatabaseUseItem, LevelItem, UseItem } from '@sonolus/core'
-import { getByName } from '../schemas/database'
-import { toBackgroundItem } from './background-item'
-import { toEffectItem } from './effect-item'
-import { toEngineItem } from './engine-item'
+import { getByName } from '../database'
+import { Sonolus } from '../sonolus'
+import { toTags } from '../tag'
+import { toBackgroundItem } from './background'
+import { toEffectItem } from './effect'
+import { toEngineItem } from './engine'
 import { ToItem } from './item'
-import { toParticleItem } from './particle-item'
-import { toSkinItem } from './skin-item'
-import { Sonolus } from './sonolus'
-import { toTags } from './tag'
+import { toParticleItem } from './particle'
+import { toSkinItem } from './skin'
 
 export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item) => ({
     name: item.name,
@@ -16,7 +16,7 @@ export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item)
     rating: item.rating,
     engine: toEngineItem(
         sonolus,
-        getByName(sonolus.db.engines, item.engine, `Level/${item.name}`, '.engine'),
+        getByName(sonolus.db.engines, item.engine, `Level/${item.name}`, '/engine'),
     ),
     useSkin: toUseItem(
         sonolus,
@@ -24,7 +24,7 @@ export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item)
         item.useSkin,
         sonolus.db.skins,
         `Level/${item.name}`,
-        '.useSkin.item',
+        '/useSkin/item',
     ),
     useBackground: toUseItem(
         sonolus,
@@ -32,7 +32,7 @@ export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item)
         item.useBackground,
         sonolus.db.backgrounds,
         `Level/${item.name}`,
-        '.useBackground.item',
+        '/useBackground/item',
     ),
     useEffect: toUseItem(
         sonolus,
@@ -40,7 +40,7 @@ export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item)
         item.useEffect,
         sonolus.db.effects,
         `Level/${item.name}`,
-        '.useEffect.item',
+        '/useEffect/item',
     ),
     useParticle: toUseItem(
         sonolus,
@@ -48,7 +48,7 @@ export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item)
         item.useParticle,
         sonolus.db.particles,
         `Level/${item.name}`,
-        '.useParticle.item',
+        '/useParticle/item',
     ),
     title: sonolus.localize(item.title),
     artists: sonolus.localize(item.artists),

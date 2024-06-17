@@ -1,8 +1,8 @@
 import { DatabasePlaylistItem, PlaylistItem } from '@sonolus/core'
-import { getByName } from '../schemas/database'
+import { getByName } from '../database'
+import { toTags } from '../tag'
 import { ToItem } from './item'
-import { toLevelItem } from './level-item'
-import { toTags } from './tag'
+import { toLevelItem } from './level'
 
 export const toPlaylistItem: ToItem<DatabasePlaylistItem, PlaylistItem> = (sonolus, item) => ({
     name: item.name,
@@ -15,7 +15,7 @@ export const toPlaylistItem: ToItem<DatabasePlaylistItem, PlaylistItem> = (sonol
     levels: item.levels.map((level, index) =>
         toLevelItem(
             sonolus,
-            getByName(sonolus.db.levels, level, `Playlist/${item.name}`, `.levels[${index}]`),
+            getByName(sonolus.db.levels, level, `Playlist/${item.name}`, `/levels/${index}`),
         ),
     ),
     thumbnail: item.thumbnail,
