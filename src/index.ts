@@ -31,7 +31,7 @@ import { parse } from './utils/json'
 
 const options = new Command()
     .name('sonolus-generate-static')
-    .version('5.4.2')
+    .version('5.4.3')
     .option('-i, --input <value>', 'input directory', 'pack')
     .option('-o, --output <value>', 'output directory', 'static')
     .option('-a, --address [value]', 'address')
