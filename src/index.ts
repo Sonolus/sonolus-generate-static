@@ -79,6 +79,7 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
             item: toItem(sonolus, item),
             description: sonolus.localize(item.description),
             hasCommunity: false,
+            leaderboards: [],
             sections: [
                 {
                     title: Text.Recommended,
@@ -131,8 +132,17 @@ try {
     const serverInfo: ServerInfo = {
         title: sonolus.localize(sonolus.db.info.title),
         description: sonolus.db.info.description && sonolus.localize(sonolus.db.info.description),
-        hasAuthentication: false,
-        hasMultiplayer: false,
+        buttons: [
+            { type: 'post' },
+            { type: 'playlist' },
+            { type: 'level' },
+            { type: 'replay' },
+            { type: 'skin' },
+            { type: 'background' },
+            { type: 'effect' },
+            { type: 'particle' },
+            { type: 'engine' },
+        ],
         banner: sonolus.db.info.banner,
     }
     outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
