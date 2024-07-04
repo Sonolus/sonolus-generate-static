@@ -3,12 +3,13 @@
 import {
     Database,
     Icon,
-    ItemDetails,
-    ItemInfo,
-    ItemList,
+    ItemType,
     LocalizationText,
     PackageInfo,
     ServerInfo,
+    ServerItemDetails,
+    ServerItemInfo,
+    ServerItemList,
     Text,
     localize as sonolusLocalize,
 } from '@sonolus/core'
@@ -67,24 +68,29 @@ const orderItems = <T extends { name: string }>(items: T[], names: string[] = []
     items.sort((a, b) => getSortOrder(a) - getSortOrder(b))
 }
 
-const outputItems = <T extends { name: string; description: LocalizationText }, U>(
+const outputItems = <T extends { name: string; description?: LocalizationText }, U>(
     dirname: string,
     sonolus: Sonolus,
     items: T[],
+    itemType: ItemType,
     toItem: ToItem<T, U>,
 ) => {
     for (const [index, item] of items.entries()) {
         console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${item.name}`)
-        const itemDetails: ItemDetails<U> = {
+        const itemDetails: ServerItemDetails<U> = {
             item: toItem(sonolus, item),
-            description: sonolus.localize(item.description),
+            description: item.description && sonolus.localize(item.description),
+            actions: [],
             hasCommunity: false,
             leaderboards: [],
             sections: [
                 {
                     title: Text.Recommended,
                     icon: Icon.Star,
-                    items: items.slice(index + 1, index + 6).map((item) => toItem(sonolus, item)),
+                    itemType,
+                    items: items
+                        .slice(index + 1, index + 6)
+                        .map((item) => toItem(sonolus, item) as never),
                 },
             ],
         }
@@ -92,19 +98,20 @@ const outputItems = <T extends { name: string; description: LocalizationText }, 
     }
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
-    const list: ItemList<U> = {
+    const list: ServerItemList<U> = {
         pageCount: 1,
         items: items.map((item) => toItem(sonolus, item)),
     }
     outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/info`)
-    const itemInfo: ItemInfo<U> = {
+    const itemInfo: ServerItemInfo = {
         banner: sonolus.db.info.banner,
         sections: [
             {
                 title: Text.Newest,
-                items: items.slice(0, 5).map((item) => toItem(sonolus, item)),
+                itemType,
+                items: items.slice(0, 5).map((item) => toItem(sonolus, item) as never),
             },
         ],
     }
@@ -143,6 +150,9 @@ try {
             { type: 'particle' },
             { type: 'engine' },
         ],
+        configuration: {
+            options: [],
+        },
         banner: sonolus.db.info.banner,
     }
     outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
@@ -153,15 +163,15 @@ try {
     }
     outputJsonSync(`${pathOutput}/sonolus/package`, packageInfo)
 
-    outputItems('posts', sonolus, sonolus.db.posts, toPostItem)
-    outputItems('playlists', sonolus, sonolus.db.playlists, toPlaylistItem)
-    outputItems('levels', sonolus, sonolus.db.levels, toLevelItem)
-    outputItems('skins', sonolus, sonolus.db.skins, toSkinItem)
-    outputItems('backgrounds', sonolus, sonolus.db.backgrounds, toBackgroundItem)
-    outputItems('effects', sonolus, sonolus.db.effects, toEffectItem)
-    outputItems('particles', sonolus, sonolus.db.particles, toParticleItem)
-    outputItems('engines', sonolus, sonolus.db.engines, toEngineItem)
-    outputItems('replays', sonolus, sonolus.db.replays, toReplayItem)
+    outputItems('posts', sonolus, sonolus.db.posts, 'post', toPostItem)
+    outputItems('playlists', sonolus, sonolus.db.playlists, 'playlist', toPlaylistItem)
+    outputItems('levels', sonolus, sonolus.db.levels, 'level', toLevelItem)
+    outputItems('skins', sonolus, sonolus.db.skins, 'skin', toSkinItem)
+    outputItems('backgrounds', sonolus, sonolus.db.backgrounds, 'background', toBackgroundItem)
+    outputItems('effects', sonolus, sonolus.db.effects, 'effect', toEffectItem)
+    outputItems('particles', sonolus, sonolus.db.particles, 'particle', toParticleItem)
+    outputItems('engines', sonolus, sonolus.db.engines, 'engine', toEngineItem)
+    outputItems('replays', sonolus, sonolus.db.replays, 'replay', toReplayItem)
 
     console.log('[INFO]', `${pathOutput}/sonolus/repository`)
     copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)
