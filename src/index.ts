@@ -10,6 +10,7 @@ import {
     ServerItemDetails,
     ServerItemInfo,
     ServerItemList,
+    ServerLevelResultInfo,
     Text,
     localize as sonolusLocalize,
 } from '@sonolus/core'
@@ -158,9 +159,7 @@ try {
     outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
 
     console.log('[INFO]', `${pathOutput}/sonolus/package`)
-    const packageInfo: PackageInfo = {
-        shouldUpdate: false,
-    }
+    const packageInfo: PackageInfo = {}
     outputJsonSync(`${pathOutput}/sonolus/package`, packageInfo)
 
     outputItems('posts', sonolus, sonolus.db.posts, 'post', toPostItem)
@@ -172,6 +171,10 @@ try {
     outputItems('particles', sonolus, sonolus.db.particles, 'particle', toParticleItem)
     outputItems('engines', sonolus, sonolus.db.engines, 'engine', toEngineItem)
     outputItems('replays', sonolus, sonolus.db.replays, 'replay', toReplayItem)
+
+    console.log('[INFO]', `${pathOutput}/sonolus/levels/result/info`)
+    const levelResultInfo: ServerLevelResultInfo = {}
+    outputJsonSync(`${pathOutput}/sonolus/levels/result/info`, levelResultInfo)
 
     console.log('[INFO]', `${pathOutput}/sonolus/repository`)
     copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)
