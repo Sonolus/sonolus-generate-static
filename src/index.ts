@@ -140,17 +140,21 @@ try {
     const serverInfo: ServerInfo = {
         title: sonolus.localize(sonolus.db.info.title),
         description: sonolus.db.info.description && sonolus.localize(sonolus.db.info.description),
-        buttons: [
-            { type: 'post' },
-            { type: 'playlist' },
-            { type: 'level' },
-            { type: 'replay' },
-            { type: 'skin' },
-            { type: 'background' },
-            { type: 'effect' },
-            { type: 'particle' },
-            { type: 'engine' },
-        ],
+        buttons: (
+            [
+                ['post', 'posts'],
+                ['playlist', 'playlists'],
+                ['level', 'levels'],
+                ['replay', 'replays'],
+                ['skin', 'skins'],
+                ['background', 'backgrounds'],
+                ['effect', 'effects'],
+                ['particle', 'particles'],
+                ['engine', 'engines'],
+            ] as const
+        )
+            .filter(([, type]) => sonolus.db[type].length)
+            .map(([type]) => ({ type })),
         configuration: {
             options: [],
         },
