@@ -60,8 +60,8 @@ const orderDb = (db: Database, ordering: Ordering) => {
     orderItems(db.replays, ordering.replays)
 }
 
-const orderItems = <T extends { name: string }>(items: T[], names: string[] = []) => {
-    const getSortOrder = (item: T) => {
+const orderItems = (items: { name: string }[], names: string[] = []) => {
+    const getSortOrder = (item: { name: string }) => {
         const index = names.indexOf(item.name)
         return index === -1 ? Number.POSITIVE_INFINITY : index
     }
