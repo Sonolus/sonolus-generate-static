@@ -1,6 +1,6 @@
 import { BackgroundItem, DatabaseBackgroundItem } from '@sonolus/core'
-import { toTags } from '../tag'
-import { ToItem } from './item'
+import { toTags } from '../tag.js'
+import { ToItem } from './item.js'
 
 export const toBackgroundItem: ToItem<DatabaseBackgroundItem, BackgroundItem> = (
     sonolus,

@@ -15,21 +15,21 @@ import {
     localize as sonolusLocalize,
 } from '@sonolus/core'
 import { Command } from 'commander'
-import { copySync, emptyDirSync, existsSync, outputJsonSync, removeSync } from 'fs-extra'
-import { databaseSchema } from './schemas/database'
-import { Ordering, orderingSchema } from './schemas/ordering'
-import { toBackgroundItem } from './server/items/background'
-import { toEffectItem } from './server/items/effect'
-import { toEngineItem } from './server/items/engine'
-import { ToItem } from './server/items/item'
-import { toLevelItem } from './server/items/level'
-import { toParticleItem } from './server/items/particle'
-import { toPlaylistItem } from './server/items/playlist'
-import { toPostItem } from './server/items/post-item'
-import { toReplayItem } from './server/items/replay'
-import { toSkinItem } from './server/items/skin'
-import { Sonolus } from './server/sonolus'
-import { parse } from './utils/json'
+import fs from 'fs-extra'
+import { databaseSchema } from './schemas/database.js'
+import { Ordering, orderingSchema } from './schemas/ordering.js'
+import { toBackgroundItem } from './server/items/background.js'
+import { toEffectItem } from './server/items/effect.js'
+import { toEngineItem } from './server/items/engine.js'
+import { ToItem } from './server/items/item.js'
+import { toLevelItem } from './server/items/level.js'
+import { toParticleItem } from './server/items/particle.js'
+import { toPlaylistItem } from './server/items/playlist.js'
+import { toPostItem } from './server/items/post.js'
+import { toReplayItem } from './server/items/replay.js'
+import { toSkinItem } from './server/items/skin.js'
+import { Sonolus } from './server/sonolus.js'
+import { parse } from './utils/json.js'
 
 const options = new Command()
     .name('sonolus-generate-static')
@@ -95,7 +95,7 @@ const outputItems = <T extends { name: string; description?: LocalizationText },
                 },
             ],
         }
-        outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
+        fs.outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
     }
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/list`)
@@ -103,7 +103,7 @@ const outputItems = <T extends { name: string; description?: LocalizationText },
         pageCount: 1,
         items: items.map((item) => toItem(sonolus, item)),
     }
-    outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
+    fs.outputJsonSync(`${pathOutput}/sonolus/${dirname}/list`, list)
 
     console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/info`)
     const itemInfo: ServerItemInfo = {
@@ -116,14 +116,14 @@ const outputItems = <T extends { name: string; description?: LocalizationText },
             },
         ],
     }
-    outputJsonSync(`${pathOutput}/sonolus/${dirname}/info`, itemInfo)
+    fs.outputJsonSync(`${pathOutput}/sonolus/${dirname}/info`, itemInfo)
 }
 
 try {
     console.log('[INFO]', 'Generating:', pathInput)
     console.log()
 
-    emptyDirSync(pathOutput)
+    fs.emptyDirSync(pathOutput)
 
     const sonolus: Sonolus = {
         db: parse(`${pathInput}/db.json`, databaseSchema),
@@ -131,7 +131,7 @@ try {
         localize: (text) => sonolusLocalize(text, targetLocale, fallbackLocale),
     }
 
-    const ordering = existsSync(`${pathInput}/ordering.json`)
+    const ordering = fs.existsSync(`${pathInput}/ordering.json`)
         ? parse(`${pathInput}/ordering.json`, orderingSchema)
         : {}
     orderDb(sonolus.db, ordering)
@@ -160,11 +160,11 @@ try {
         },
         banner: sonolus.db.info.banner,
     }
-    outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
+    fs.outputJsonSync(`${pathOutput}/sonolus/info`, serverInfo)
 
     console.log('[INFO]', `${pathOutput}/sonolus/package`)
     const packageInfo: PackageInfo = {}
-    outputJsonSync(`${pathOutput}/sonolus/package`, packageInfo)
+    fs.outputJsonSync(`${pathOutput}/sonolus/package`, packageInfo)
 
     outputItems('posts', sonolus, sonolus.db.posts, 'post', toPostItem)
     outputItems('playlists', sonolus, sonolus.db.playlists, 'playlist', toPlaylistItem)
@@ -178,10 +178,10 @@ try {
 
     console.log('[INFO]', `${pathOutput}/sonolus/levels/result/info`)
     const levelResultInfo: ServerLevelResultInfo = {}
-    outputJsonSync(`${pathOutput}/sonolus/levels/result/info`, levelResultInfo)
+    fs.outputJsonSync(`${pathOutput}/sonolus/levels/result/info`, levelResultInfo)
 
     console.log('[INFO]', `${pathOutput}/sonolus/repository`)
-    copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)
+    fs.copySync(`${pathInput}/repository`, `${pathOutput}/sonolus/repository`)
 
     console.log()
     console.log('[SUCCESS]', 'Generated to:', pathOutput)
@@ -189,5 +189,5 @@ try {
     console.log()
     console.error('[FAILED]', error)
 
-    removeSync(pathOutput)
+    fs.removeSync(pathOutput)
 }

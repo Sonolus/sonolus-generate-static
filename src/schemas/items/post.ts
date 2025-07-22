@@ -1,10 +1,10 @@
 import { Type } from '@sinclair/typebox'
 import { DatabasePostItem } from '@sonolus/core'
-import { Expect } from '../../utils/test'
-import { localizationTextSchema } from '../localizationText'
-import { srlSchema } from '../srl'
-import { databaseTagSchema } from '../tag'
-import { SchemaToMatch } from '../test'
+import { Expect } from '../../utils/test.js'
+import { localizationTextSchema } from '../localizationText.js'
+import { srlSchema } from '../srl.js'
+import { databaseTagSchema } from '../tag.js'
+import { SchemaToMatch } from '../test.js'
 
 export const databasePostItemSchema = Type.Object({
     name: Type.String(),

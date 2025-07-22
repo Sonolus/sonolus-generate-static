@@ -1,13 +1,13 @@
 import { DatabaseLevelItem, DatabaseUseItem, LevelItem, UseItem } from '@sonolus/core'
-import { getByName } from '../database'
-import { Sonolus } from '../sonolus'
-import { toTags } from '../tag'
-import { toBackgroundItem } from './background'
-import { toEffectItem } from './effect'
-import { toEngineItem } from './engine'
-import { ToItem } from './item'
-import { toParticleItem } from './particle'
-import { toSkinItem } from './skin'
+import { getByName } from '../database.js'
+import { Sonolus } from '../sonolus.js'
+import { toTags } from '../tag.js'
+import { toBackgroundItem } from './background.js'
+import { toEffectItem } from './effect.js'
+import { toEngineItem } from './engine.js'
+import { ToItem } from './item.js'
+import { toParticleItem } from './particle.js'
+import { toSkinItem } from './skin.js'
 
 export const toLevelItem: ToItem<DatabaseLevelItem, LevelItem> = (sonolus, item) => ({
     name: item.name,

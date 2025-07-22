@@ -1,6 +1,6 @@
 import { DatabaseSkinItem, SkinItem } from '@sonolus/core'
-import { toTags } from '../tag'
-import { ToItem } from './item'
+import { toTags } from '../tag.js'
+import { ToItem } from './item.js'
 
 export const toSkinItem: ToItem<DatabaseSkinItem, SkinItem> = (sonolus, item) => ({
     name: item.name,
