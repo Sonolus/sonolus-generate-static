@@ -1,8 +1,8 @@
 import { DatabasePlaylistItem, PlaylistItem } from '@sonolus/core'
-import { getByName } from '../database'
-import { toTags } from '../tag'
-import { ToItem } from './item'
-import { toLevelItem } from './level'
+import { getByName } from '../database.js'
+import { toTags } from '../tag.js'
+import { ToItem } from './item.js'
+import { toLevelItem } from './level.js'
 
 export const toPlaylistItem: ToItem<DatabasePlaylistItem, PlaylistItem> = (sonolus, item) => ({
     name: item.name,

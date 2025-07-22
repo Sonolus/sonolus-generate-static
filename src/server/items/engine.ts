@@ -1,11 +1,11 @@
 import { DatabaseEngineItem, EngineItem } from '@sonolus/core'
-import { getByName } from '../database'
-import { toTags } from '../tag'
-import { toBackgroundItem } from './background'
-import { toEffectItem } from './effect'
-import { ToItem } from './item'
-import { toParticleItem } from './particle'
-import { toSkinItem } from './skin'
+import { getByName } from '../database.js'
+import { toTags } from '../tag.js'
+import { toBackgroundItem } from './background.js'
+import { toEffectItem } from './effect.js'
+import { ToItem } from './item.js'
+import { toParticleItem } from './particle.js'
+import { toSkinItem } from './skin.js'
 
 export const toEngineItem: ToItem<DatabaseEngineItem, EngineItem> = (sonolus, item) => ({
     name: item.name,

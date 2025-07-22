@@ -1,6 +1,6 @@
 import { DatabasePostItem, PostItem } from '@sonolus/core'
-import { toTags } from '../tag'
-import { ToItem } from './item'
+import { toTags } from '../tag.js'
+import { ToItem } from './item.js'
 
 export const toPostItem: ToItem<DatabasePostItem, PostItem> = (sonolus, item) => ({
     name: item.name,

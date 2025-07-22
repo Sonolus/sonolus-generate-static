@@ -1,6 +1,6 @@
 import { DatabaseEffectItem, EffectItem } from '@sonolus/core'
-import { toTags } from '../tag'
-import { ToItem } from './item'
+import { toTags } from '../tag.js'
+import { ToItem } from './item.js'
 
 export const toEffectItem: ToItem<DatabaseEffectItem, EffectItem> = (sonolus, item) => ({
     name: item.name,
