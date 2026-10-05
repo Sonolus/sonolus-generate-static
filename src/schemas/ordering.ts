@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox'
+import Type, { Static } from 'typebox'
 
 export const orderingSchema = Type.Partial(
     Type.Object({

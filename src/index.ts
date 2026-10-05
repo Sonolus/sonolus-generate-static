@@ -16,6 +16,7 @@ import {
 } from '@sonolus/core'
 import { Command } from 'commander'
 import fs from 'fs-extra'
+
 import { databaseSchema } from './schemas/database.js'
 import { Ordering, orderingSchema } from './schemas/ordering.js'
 import { toBackgroundItem } from './server/items/background.js'
