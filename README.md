@@ -4,19 +4,19 @@ CLI tool to generate static Sonolus server from repository and database.
 
 ## Links
 
--   [Sonolus Website](https://sonolus.com)
--   [Sonolus Wiki](https://wiki.sonolus.com)
--   [sonolus-pack](https://github.com/Sonolus/sonolus-pack)
--   [sonolus-express](https://github.com/Sonolus/sonolus-express)
+- [Sonolus Website](https://sonolus.com)
+- [Sonolus Wiki](https://wiki.sonolus.com)
+- [sonolus-pack](https://github.com/Sonolus/sonolus-pack)
+- [sonolus-express](https://github.com/Sonolus/sonolus-express)
 
 ## Static Sonolus Server
 
 While static Sonolus servers are easy to host and prepare, it has significant user experience disadvantages:
 
--   No Sonolus client version checking.
--   No localization according to user language.
--   No search or pagination.
--   All contents will be shown in one page.
+- No Sonolus client version checking.
+- No localization according to user language.
+- No search or pagination.
+- All contents will be shown in one page.
 
 It is recommended to develop with [sonolus-express](https://github.com/Sonolus/sonolus-express) instead.
 
@@ -58,8 +58,8 @@ It is recommended to use [sonolus-pack](https://github.com/Sonolus/sonolus-pack)
 
 Input contains:
 
--   `/db.json` contains information of items.
--   `/repository` contains processed resources.
+- `/db.json` contains information of items.
+- `/repository` contains processed resources.
 
 ## Output
 

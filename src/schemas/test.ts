@@ -1,4 +1,5 @@
-import { Static, TSchema } from '@sinclair/typebox'
+import { Static, TSchema } from 'typebox'
+
 import { MutuallyAssignable } from '../utils/test.js'
 
 export type SchemaToMatch<A extends TSchema, B> = MutuallyAssignable<Static<A>, B>
