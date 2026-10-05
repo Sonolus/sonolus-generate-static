@@ -6,6 +6,7 @@ import { localizationTextSchema } from '../localizationText.js'
 import { srlSchema } from '../srl.js'
 import { databaseTagSchema } from '../tag.js'
 import { SchemaToMatch } from '../test.js'
+import { metaSchema } from './meta.js'
 
 const databaseUseItemSchema = Type.Union([
     Type.Object({ useDefault: Type.Literal(true) }),
@@ -30,6 +31,7 @@ export const databaseLevelItemSchema = Type.Object({
     bgm: srlSchema,
     preview: Type.Optional(srlSchema),
     data: srlSchema,
+    meta: metaSchema,
 })
 
 type _Tests = Expect<

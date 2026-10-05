@@ -6,6 +6,7 @@ import { localizationTextSchema } from '../localizationText.js'
 import { srlSchema } from '../srl.js'
 import { databaseTagSchema } from '../tag.js'
 import { SchemaToMatch } from '../test.js'
+import { metaSchema } from './meta.js'
 
 export const databaseReplayItemSchema = Type.Object({
     name: Type.String(),
@@ -18,6 +19,7 @@ export const databaseReplayItemSchema = Type.Object({
     level: Type.String(),
     data: srlSchema,
     configuration: srlSchema,
+    meta: metaSchema,
 })
 
 type _Tests = Expect<[SchemaToMatch<typeof databaseReplayItemSchema, DatabaseReplayItem>]>
