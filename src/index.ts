@@ -2,7 +2,6 @@
 
 import {
     Database,
-    Icon,
     ItemType,
     LocalizationText,
     PackageInfo,
@@ -18,7 +17,9 @@ import { Command } from 'commander'
 import fs from 'fs-extra'
 
 import { databaseSchema } from './schemas/database.js'
+import { ItemMeta } from './schemas/items/meta.js'
 import { Ordering, orderingSchema } from './schemas/ordering.js'
+import { getByName } from './server/database.js'
 import { toBackgroundItem } from './server/items/background.js'
 import { toEffectItem } from './server/items/effect.js'
 import { toEngineItem } from './server/items/engine.js'
@@ -70,14 +71,17 @@ const orderItems = (items: { name: string }[], names: string[] = []) => {
     items.sort((a, b) => getSortOrder(a) - getSortOrder(b))
 }
 
-const outputItems = <T extends { name: string; description?: LocalizationText }, U>(
+const outputItems = <
+    T extends { name: string; description?: LocalizationText; meta?: ItemMeta },
+    U,
+>(
     dirname: string,
     sonolus: Sonolus,
     items: T[],
     itemType: ItemType,
     toItem: ToItem<T, U>,
 ) => {
-    for (const [index, item] of items.entries()) {
+    for (const item of items) {
         console.log('[INFO]', `${pathOutput}/sonolus/${dirname}/${item.name}`)
         const itemDetails: ServerItemDetails<U> = {
             item: toItem(sonolus, item),
@@ -85,16 +89,21 @@ const outputItems = <T extends { name: string; description?: LocalizationText },
             actions: [],
             hasCommunity: false,
             leaderboards: [],
-            sections: [
-                {
-                    title: Text.Recommended,
-                    icon: Icon.Star,
+            sections:
+                item.meta?.sections?.map((section, i) => ({
+                    title: sonolus.localize(section.title),
+                    icon: section.icon,
+                    description: section.description && sonolus.localize(section.description),
+                    help: section.help && sonolus.localize(section.help),
                     itemType,
-                    items: items
-                        .slice(index + 1, index + 6)
-                        .map((item) => toItem(sonolus, item) as never),
-                },
-            ],
+                    items: section.items.map(
+                        (name, j) =>
+                            toItem(
+                                sonolus,
+                                getByName(items, name, item.name, `/meta/sections/${i}/items/${j}`),
+                            ) as never,
+                    ),
+                })) ?? [],
         }
         fs.outputJsonSync(`${pathOutput}/sonolus/${dirname}/${item.name}`, itemDetails)
     }

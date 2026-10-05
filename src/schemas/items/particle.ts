@@ -6,6 +6,7 @@ import { localizationTextSchema } from '../localizationText.js'
 import { srlSchema } from '../srl.js'
 import { databaseTagSchema } from '../tag.js'
 import { SchemaToMatch } from '../test.js'
+import { metaSchema } from './meta.js'
 
 export const databaseParticleItemSchema = Type.Object({
     name: Type.String(),
@@ -18,6 +19,7 @@ export const databaseParticleItemSchema = Type.Object({
     thumbnail: srlSchema,
     data: srlSchema,
     texture: srlSchema,
+    meta: metaSchema,
 })
 
 type _Tests = Expect<[SchemaToMatch<typeof databaseParticleItemSchema, DatabaseParticleItem>]>

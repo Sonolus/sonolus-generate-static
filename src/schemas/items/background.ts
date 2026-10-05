@@ -6,6 +6,7 @@ import { localizationTextSchema } from '../localizationText.js'
 import { srlSchema } from '../srl.js'
 import { databaseTagSchema } from '../tag.js'
 import { SchemaToMatch } from '../test.js'
+import { metaSchema } from './meta.js'
 
 export const databaseBackgroundItemSchema = Type.Object({
     name: Type.String(),
@@ -19,6 +20,7 @@ export const databaseBackgroundItemSchema = Type.Object({
     data: srlSchema,
     image: srlSchema,
     configuration: srlSchema,
+    meta: metaSchema,
 })
 
 type _Tests = Expect<[SchemaToMatch<typeof databaseBackgroundItemSchema, DatabaseBackgroundItem>]>

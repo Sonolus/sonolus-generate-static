@@ -6,6 +6,7 @@ import { localizationTextSchema } from '../localizationText.js'
 import { srlSchema } from '../srl.js'
 import { databaseTagSchema } from '../tag.js'
 import { SchemaToMatch } from '../test.js'
+import { metaSchema } from './meta.js'
 
 export const databasePostItemSchema = Type.Object({
     name: Type.String(),
@@ -16,6 +17,7 @@ export const databasePostItemSchema = Type.Object({
     tags: Type.Array(databaseTagSchema),
     description: Type.Optional(localizationTextSchema),
     thumbnail: Type.Optional(srlSchema),
+    meta: metaSchema,
 })
 
 type _Tests = Expect<[SchemaToMatch<typeof databasePostItemSchema, DatabasePostItem>]>

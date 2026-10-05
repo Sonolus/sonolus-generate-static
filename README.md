@@ -61,6 +61,22 @@ Input contains:
 - `/db.json` contains information of items.
 - `/repository` contains processed resources.
 
+### Item Meta
+
+Item can have optional meta.
+
+```ts
+type ItemMeta = {
+    sections?: {
+        title: LocalizationText
+        icon?: string
+        description?: LocalizationText
+        help?: LocalizationText
+        items: string[] // name of referenced items
+    }[]
+}
+```
+
 ## Output
 
 Output can be statically served by a web server, and Sonolus client can connect to and play.
